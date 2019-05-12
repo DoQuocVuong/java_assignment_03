@@ -1,118 +1,93 @@
 package assignment_03;
 
+import java.io.*;
 import java.util.Scanner;
 
 public class PhanSo {
-//    public int tuSo1;
-//    public int mauSo1;
-//    public int tuSo2;
-//    public int mauSo2;
-    public int tuSo;
-    public int mauSo;
+    protected int ts, ms;
 
-    public PhanSo(int tuSo, int mauSo) {
-
-        this.tuSo = tuSo;
-
-        this.mauSo = mauSo;
+    PhanSo() {
     }
 
-    public void setTuSo(int tuSo) {
-        this.tuSo = tuSo;
+    PhanSo(int tu, int mau) {
+        ts = tu;
+        ms = mau;
     }
 
-    public int getTuSo() {
-        return tuSo;
+    static int nhapgt() throws IOException {
+        String str;
+        DataInputStream stream = new DataInputStream(System.in);
+        str = stream.readLine();
+        return Integer.valueOf(str).intValue();
     }
 
-    public void setMauSo(int mauSo) {
-        this.mauSo = mauSo;
+    PhanSo nhapps(int x) throws IOException {
+        int tu, mau;
+        System.out.println("Nhập phân số thứ " + x);
+        System.out.println("Tử số: ");
+        tu = nhapgt();
+        System.out.println("Mẫu số: ");
+        do {
+            mau = nhapgt();
+            if (mau == 0) System.out.println("Nhập lại");
+        } while (mau == 0);
+        PhanSo ps = new PhanSo(tu, mau);
+        return ps;
     }
 
-    public int getMauSo() {
-        return mauSo;
-    }
-
-//    public void checkPhanSo() {
-//        if (mauSo != 0) {
-//            System.out.println("Mẫu sô phải khác không. Hãy nhập lại");
-//            nhapPhanSo();
-//        }
-//    }
-
-    public int timUSCLN(int a, int b) {
-        while (a != b) {
-            if (a > b) {
-                a -= b;
-            } else {
-                b -= a;
-            }
-        }
+    static int UCLN(int a, int b) {
+        while (a != b)
+            if (a > b) a = a - b;
+            else b = b - a;
         return a;
     }
 
-    public void rutGonPhanSo() {
-        int i = timUSCLN(this.getTuSo(), this.getMauSo());
-        this.setTuSo(this.getTuSo() / i);
-        this.setMauSo(this.getMauSo() / i);
+    static PhanSo toigian(PhanSo ps) {
+        PhanSo phanso = new PhanSo();
+        phanso.ts = ps.ts / UCLN(Math.abs(ps.ts), Math.abs(ps.ms));
+        phanso.ms = ps.ms / UCLN(Math.abs(ps.ts), Math.abs(ps.ms));
+        return phanso;
     }
 
-//    public void nhapPhanSo() {
-//        Scanner scanner = new Scanner(System.in);
-//        System.out.println("Hãy nhập tử số 1: ");
-//        tuSo1 = scanner.nextInt();
-//        System.out.println("Hãy nhập mẫu số 1: ");
-//         mauSo1 = scanner.nextInt();
-//        System.out.println("Hãy nhập tử số 2: ");
-//         tuSo2 = scanner.nextInt();
-//        System.out.println("Hãy nhập mẫu số 2: ");
-//         mauSo2 = scanner.nextInt();
-//
-//        checkPhanSo();
-//    }
-
-    public void inPhanSo() {
-
-        System.out.println("Phân số là: " + tuSo + "/" + mauSo);
+    static PhanSo add(PhanSo ps1, PhanSo ps2) {
+        PhanSo phanso = new PhanSo();
+        phanso.ts = ps1.ts * ps2.ms + ps2.ts * ps1.ms;
+        phanso.ms = ps1.ms * ps2.ms;
+        if (phanso.ts != 0)
+            phanso = toigian(phanso);
+        return phanso;
     }
 
-    public void nghichDaoPhanSo() {
-        int ts = this.getMauSo();
-        int ms = this.getTuSo();
-        PhanSo phanSoNgichDao = new PhanSo(ts, ms);
-        phanSoNgichDao.rutGonPhanSo();
-        System.out.println("Nghịch đảo phân số = " + phanSoNgichDao.tuSo + "/" + phanSoNgichDao.mauSo);
+    static PhanSo sub(PhanSo ps1, PhanSo ps2) {
+        PhanSo phanso = new PhanSo();
+        phanso.ts = ps1.ts * ps2.ms - ps2.ts * ps1.ms;
+        phanso.ms = ps1.ms * ps2.ms;
+        if (phanso.ts != 0)
+            phanso = toigian(phanso);
+        return phanso;
     }
 
-    public void add(PhanSo ps) {
-        int ts = this.getTuSo() * ps.getMauSo() + ps.getTuSo() * this.getMauSo();
-        int ms = this.getMauSo() * ps.getMauSo();
-        PhanSo phanSoTong = new PhanSo(ts, ms);
-        phanSoTong.rutGonPhanSo();
-        System.out.println("Tổng hai phân số = " + phanSoTong.tuSo + "/" + phanSoTong.mauSo);
+    static PhanSo mul(PhanSo ps1, PhanSo ps2) {
+        PhanSo phanso = new PhanSo();
+        phanso.ts = ps1.ts * ps2.ts;
+        phanso.ms = ps1.ms * ps2.ms;
+        if (phanso.ts != 0)
+            phanso = toigian(phanso);
+        return phanso;
     }
 
-    public void sub(PhanSo ps) {
-        int ts = this.getTuSo() * ps.getMauSo() - ps.getTuSo() * this.getMauSo();
-        int ms = this.getMauSo() * ps.getMauSo();
-        PhanSo phanSoHieu = new PhanSo(ts, ms);
-        phanSoHieu.rutGonPhanSo();
-        System.out.println("Hiệu hai phân số = " + phanSoHieu.tuSo + "/" + phanSoHieu.mauSo);
+    static PhanSo div(PhanSo ps1, PhanSo ps2) {
+        PhanSo phanso = new PhanSo();
+        phanso.ts = ps1.ts * ps2.ms;
+        phanso.ms = ps1.ms * ps2.ts;
+        if (phanso.ts != 0)
+            phanso = toigian(phanso);
+        return phanso;
     }
 
-    public void mul(PhanSo ps) {
-        int ts = this.getTuSo() * ps.getTuSo();
-        int ms = this.getMauSo() * ps.getMauSo();
-        PhanSo phanSoTich = new PhanSo(ts, ms);
-        phanSoTich.rutGonPhanSo();
-        System.out.println("Tích hai phân số = " + phanSoTich.tuSo + "/" + phanSoTich.mauSo);
-    }
-
-    public void div(PhanSo ps) {
-        int ts = this.getTuSo() * ps.getMauSo();
-        int ms = this.getMauSo() * ps.getTuSo();
-        PhanSo phanSoThuong = new PhanSo(ts, ms);
-        phanSoThuong.rutGonPhanSo();
-        System.out.println("Thương hai phân số = " + phanSoThuong.tuSo + "/" + phanSoThuong.mauSo);
+    static void hienthi(PhanSo ps) {
+        if (ps.ms == 1 || ps.ts == 0)
+            System.out.println(ps.ts);
+        else System.out.println(ps.ts + "/" + ps.ms);
     }
 }
